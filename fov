@@ -1,0 +1,24 @@
+local Script = {Functions = {}}
+    Script.Functions.getToolName = function(name)
+        local split = string.split(string.split(name, "[")[2], "]")[1]
+        return split
+    end
+    Script.Functions.getEquippedWeaponName = function()
+        if (Client.Character) and Client.Character:FindFirstChildWhichIsA("Tool") then
+           local Tool =  Client.Character:FindFirstChildWhichIsA("Tool")
+           if string.find(Tool.Name, "%[") and string.find(Tool.Name, "%]") and not string.find(Tool.Name, "Wallet") and not string.find(Tool.Name, "Phone") then
+              return Script.Functions.getToolName(Tool.Name)
+           end
+        end
+        return nil
+    end
+    RS.RenderStepped:Connect(function()
+    if Script.Functions.getEquippedWeaponName() ~= nil then
+        local WeaponSettings = getgenv().Aiming.GunFOV[Script.Functions.getEquippedWeaponName()]
+        if WeaponSettings ~= nil and getgenv().Aiming.GunFOV.Enabled == true then
+            getgenv().Aiming.SilentFOV.Radius = WeaponSettings.FOV
+        else
+            getgenv().Aiming.SilentFOV.Radius = getgenv().Aiming.SilentFOV.Radius
+        end
+    end
+end)
